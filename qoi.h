@@ -93,9 +93,10 @@ bool QoiEncode(uint32_t width, uint32_t height, uint8_t channels, uint8_t colors
                     QoiWriteU8(pixel[component]);
                 }
             } else {
-                const int dr = static_cast<int>(pixel[0]) - previous[0];
-                const int dg = static_cast<int>(pixel[1]) - previous[1];
-                const int db = static_cast<int>(pixel[2]) - previous[2];
+                // QOI differences wrap in the 8-bit color domain.
+                const int dr = static_cast<int8_t>(pixel[0] - previous[0]);
+                const int dg = static_cast<int8_t>(pixel[1] - previous[1]);
+                const int db = static_cast<int8_t>(pixel[2] - previous[2]);
                 if (dr >= -2 && dr <= 1 && dg >= -2 && dg <= 1 &&
                     db >= -2 && db <= 1) {
                     QoiWriteU8(static_cast<uint8_t>(QOI_OP_DIFF_TAG |
